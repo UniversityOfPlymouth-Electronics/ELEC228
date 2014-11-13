@@ -1,0 +1,2 @@
+.GLOBAL _VisualInitialization
+

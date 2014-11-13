@@ -1,0 +1,73 @@
+Disassembly Listing for example1.1
+Generated From:
+C:/Users/noutram/Desktop/Tasks/Task1/example1.1.X/dist/default/debug/example1.1.X.debug.elf
+08-Oct-2014 19:24:08
+
+---  C:/Users/noutram/Desktop/Tasks/Task1/main.c  -------------------------------------------------------
+1:                 #include <p24FJ128GA010.h>
+2:                 
+3:                 //_CONFIG2( FNOSC_FRCPLL & OSCIOFNC_OFF );	// Internal oscillator - 4xPLL giving 16 MIPS
+4:                 #pragma config FNOSC = FRCPLL, OSCIOFNC = OFF
+5:                 
+6:                 int main()
+7:                 {
+00029E  FA0002     LNK #0x2
+8:                 	//Configure the device to use the internal oscillator
+9:                 	OSCCONbits.COSC  = 1u;	// Internal oscillator with PLL
+0002A0  803A14     MOV OSCCON, W4
+0002A2  A0C004     BSET W4, #12
+0002A4  A1D004     BCLR W4, #13
+0002A6  A1E004     BCLR W4, #14
+0002A8  883A14     MOV W4, OSCCON
+10:                	CLKDIVbits.RCDIV = 0u;	//Internal oscillator not divided (8MHz)
+0002AA  803A24     MOV CLKDIV, W4
+0002AC  A18004     BCLR W4, #8
+0002AE  A19004     BCLR W4, #9
+0002B0  A1A004     BCLR W4, #10
+0002B2  883A24     MOV W4, CLKDIV
+11:                	CLKDIVbits.DOZEN =0;	//No post scaling
+0002B4  A96745     BCLR 0x745, #3
+12:                	CLKDIVbits.DOZE  =0;	//
+0002B6  803A24     MOV CLKDIV, W4
+0002B8  A1C004     BCLR W4, #12
+0002BA  A1D004     BCLR W4, #13
+0002BC  A1E004     BCLR W4, #14
+0002BE  883A24     MOV W4, CLKDIV
+13:                	
+14:                	//Local variables
+15:                	unsigned int uOutputPattern = 1;
+0002C0  200014     MOV #0x1, W4
+0002C2  780F04     MOV W4, [W14]
+16:                	//unsigned int n=0;
+17:                	
+18:                	//Set the LSB of port A to be outputs
+19:                	TRISA = 0xFF00;					
+0002C4  2FF004     MOV #0xFF00, W4
+0002C6  881604     MOV W4, TRISA
+0002C8  370001     BRA 0x2CC
+20:                	
+21:                	//Main Loop
+22:                	while (1) {
+23:                		PORTA = uOutputPattern;				//WRITE to h/w port A
+0002CC  78021E     MOV [W14], W4
+0002CE  881614     MOV W4, PORTA
+24:                		uOutputPattern = uOutputPattern << 1;
+0002D0  78021E     MOV [W14], W4
+0002D2  420204     ADD W4, W4, W4
+0002D4  780F04     MOV W4, [W14]
+25:                		
+26:                		if (uOutputPattern == 256) {
+0002D6  201004     MOV #0x100, W4
+0002D8  78029E     MOV [W14], W5
+0002DA  528F84     SUB W5, W4, [W15]
+0002DC  3AFFF6     BRA NZ, 0x2CA
+27:                			uOutputPattern = 1;	
+0002DE  200014     MOV #0x1, W4
+0002E0  780F04     MOV W4, [W14]
+28:                		}
+29:                	}		
+0002CA  000000     NOP
+0002E2  37FFF4     BRA 0x2CC
+30:                
+31:                	return 0;
+32:                }
